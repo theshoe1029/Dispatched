@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <title>Dispatched</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">    
+    <link rel="icon" href="assets/favicon.png">
+  </head>
+  <body onload="playIntro()">     
+    <div id="menu" hidden="true">      
+        <img id="logo" src="assets/Logo.png"></img>
+        <h1>Dispatched</h1>        
+        <ul>          
+          <li><a href='index.html'>Maps</a></li>
+          <li><a href='data.html'>Data</a></li>
+        </ul>       
+    </div>  
+    <div id="intro">
+      <div id="introContainer">
+        <img id="introLogo" src="assets/IntroLogo.png"></img>
+        <h2>Welcome to Dispatched</h2>
+        <p id="introDescription">Dispatched is a simple app for mapping and visualizing emergency call data</p>
+        <p id="introContinue">Press any key to begin</p>
+      </div>
+    </div>  
+    <div id="wrapper" hidden="true">
+      <div id="buttonNavigation">
+        <input type="button" id="dispatch" value="Dispatch Statistics" hidden="true" onclick="prediction()">
+        <input type="button" id="heatMap" value="Heat Map" hidden="true" onclick="displayHeatmap()">
+        <input type="button" id="safetyMap" value="Safest Areas" hidden="true" onclick="generateCircles()">
+      </div>
+
+      <div id="map"></div>
+
+      <input type="text" id='address' class="controls" placeholder="Address" onclick="hideButtons()"><br>
+      <input type="time" id='timer'></input>
+      <input type="button" value="Submit" id="submit" onclick="submitAddress()">
+      <div id="timeError" hidden="true"></div>
+      <p id="badAddress" hidden="true">Unfortunately there is not enough data to make a prediction for this location</p>
+
+      <div id="dispatchInfo" hidden="true"></div>
+      <p id="heatDescription" hidden="true">This heat map highlights the frequency of dispatch calls over the city. The intensity of the heatmap is weighted by the urgency of each call.</p>
+      <p id="safeDescription" hidden="true">This map highlights the safest areas of the city in red.</p>     
+
+      <canvas id="chart" height='350' hidden="true"></canvas>   
+      <div id="infoContainer"><input type="button" id="moreInfo" value="More Info" hidden="true" onclick="info()"></div>
+    </div>            
+  </body> 
+</html>
+    
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.3.min.js" ></script>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWamQ_9HPs--0UMpAGOMLLUqETHqE_pC0&libraries=places,visualization&callback=setHeatmap">
+</script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+<script src="scripts/chart.js"></script>
+<script src="scripts/main.js"></script>

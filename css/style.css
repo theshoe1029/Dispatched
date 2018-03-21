@@ -1,0 +1,315 @@
+body{
+	margin: 0;
+	padding: 0;
+	font-size: 100%;
+	font-family: 'Lato', sans-serif;
+}
+
+/*****************************/
+/*    PAGE NAVIGATION BAR    */
+/*****************************/
+
+#menu{
+	height: 3em;
+	background-color: #4f92ff;
+	align-content: center;
+	display: flex;
+
+	/*Fix the navigation menu at the top of the screen*/
+	/*overflow: hidden;*/
+    position: fixed; 
+    top: 0; 
+    width: 100%;
+}
+
+#logo{
+	width: auto;
+	margin-left: 5%;
+	padding: 0;
+}
+
+h1{	
+	color: white;
+	font-weight: normal;
+	font-size: 1.35em;
+	margin-left: 2.5%;
+}
+
+ul{		
+	width: 200px;	
+	margin-left: 4%;	
+	padding: 0;
+}
+
+li{			
+	align-self: center;
+	display: inline-block;	
+	margin: 0 5%;		
+}
+
+li a{		
+	list-style: none;	
+	text-decoration: none;
+	font-size: 1.1em;	
+	color: white;
+}
+
+#dataMenu{
+	cursor: pointer;
+}
+
+#expandedMenu{
+	display: none;	
+}
+
+/*Main container div style*/
+#wrapper{
+	margin: 0 25%;
+	margin-top: 3em;
+}
+
+button:focus {outline:0;}
+input[type='button']:focus {outline:0;}
+
+#intro{
+	padding-top: 200px;
+	height: 100%;
+	width: 100%;
+	background-color: #4f92ff;
+	color: white;
+}
+
+#introLogo{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	opacity: 0;
+	-webkit-transition: opacity 1s;
+}
+
+h2{
+	margin-top: 25px;
+	text-align: center;
+	opacity: 0;
+	font-size: 2.5em;	
+	-webkit-transition: opacity 1s;
+}
+
+#intro p{
+	text-align: center;
+	opacity: 0;
+	font-size: 1.25em;
+}
+
+#introDescription{
+	margin-top: 5%;
+	opacity: 0;
+	-webkit-transition: opacity 1s;
+	-webkit-transition-delay: 1.5s;
+}
+
+#introContinue{
+	margin-top: 5%;
+	opacity: 0;
+	-webkit-transition: opacity 1s;
+	-webkit-transition-delay: 3s;
+}
+
+/*************/
+/*    MAP    */
+/*************/
+
+#buttonNavigation{
+	display: flex;
+	margin-top: 3.75em;	
+	justify-content: space-between;
+}
+
+#map, #optimalServicesMap{
+	height: 60%;
+	width: 100%;
+	margin-top: 15px;
+	-webkit-transition: height 1s;
+}
+
+#optimalServicesMap{
+	height: 40%;
+	margin-top: 25px;
+}
+
+/********************************/
+/*    ADDRESS AND TIME INPUT    */
+/********************************/
+
+input[type=text]{
+	border-radius: 5px;
+	height: 2em;
+	border: 0.5px solid #d2d2d2;	
+	font-size: 1em;
+	color: black;
+	padding-left: 10px;
+	margin-bottom: 15px;
+}
+
+::placeholder{
+	color: #afafaf;
+}
+
+input[type=time]{	
+	border-radius: 5px;
+	border: 1px solid #d2d2d2;	
+	height: 2em;
+	font-size: 1em;
+	color: black;		
+	font-family: 'Lato', sans-serif;
+	padding-left: 10px;
+}
+
+input[type=button]{
+	border-radius: 5px;
+	height: 2em;
+	border: 1px solid #4f92ff;	
+	font-size: 1em;
+	color: #4f92ff;
+	padding: 0 25px;
+}
+
+input[type=button]:hover{
+	color: white;
+	background-color: #4f92ff;	
+}
+
+input[type=button]:disabled{
+	color: #d2d2d2;
+}
+
+#address{	
+	width: 100%;
+	margin-top: 25px;	
+}
+
+#error{
+	margin-top: 15px;	
+	color: #ff0000;
+	text-align: center;
+}
+
+#badaddress{
+	text-align: center;
+	color: #ff0000;
+}
+
+/******************************/
+/*    MORE PREDICTION INFO    */
+/******************************/
+
+#infoContainer{
+	display: flex;
+	align-content: center;
+	justify-content: center;	
+}
+
+#moreInfo{
+	margin: 15px 0;	
+}
+
+#dispatchInfo p{
+	margin: 10px 0;
+}
+
+#chart{
+	width: 100%;
+}
+
+/**********************************************/
+/*    HEAT MAP AND SAFETY MAP DESCRIPTIONS    */
+/**********************************************/
+
+#heatdescription,#safedescription{
+	text-align: center;
+	color: #999999;
+}
+
+/******************************/
+/*    UNFINISHED              */
+/******************************/
+
+#dataHeader,#responseHeader,#frequencyHeader{	
+	text-align: center;
+	margin: 30px 0;
+	font-size: 1.5em;
+}
+
+#dataVisualizationContainer{
+	display: flex;
+	align-content: center;
+	justify-content: center;
+}
+
+#shiftLeft, #shiftRight{
+	border:none;
+	display:inline-block;
+	padding:8px 16px;
+	vertical-align:middle;
+	overflow:hidden;
+	text-decoration:none;
+	text-align:center;	
+	font-size: 2em;
+	color: #999999;
+}
+
+#callTypeOther{
+	font-size: 0.5em;
+	color: #999999;
+	text-align: center;
+	margin-top: 25px;
+}
+
+#callTypeAnalysis{
+	margin-top: 15px;	
+}
+
+table{
+	border-collapse: collapse;
+	margin-top: 35px;
+	width: 100%;
+}
+
+#frequencyTable{
+	margin-top: 0px;
+}
+
+td{
+	color: #999999;	
+}
+
+th, td {
+	padding: 5px;
+    border: 1px solid #999999;
+}
+
+#titles{
+	font-size: 0.85em;	
+}
+
+#d6, #d7{
+	font-size: 0.85em;
+}
+
+#responseAnalysis{
+	margin-top: 35px;
+	margin-bottom: 25px;
+	text-align: center;
+}
+
+.frequencyAnalysis{
+	margin-top: 25px;
+	margin-bottom: 25px;
+	text-align: center;
+}
+
+.visualizationAnalysis{
+	margin-top: 35px;
+	text-align: center;
+	display: block;
+}
