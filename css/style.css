@@ -76,6 +76,8 @@ input[type='button']:focus {outline:0;}
 	margin-left: auto;
 	margin-right: auto;
 	opacity: 0;
+	transition: opacity 1s;
+	-moz-transition: opacity 1s;
 	-webkit-transition: opacity 1s;
 }
 
@@ -84,6 +86,8 @@ h2{
 	text-align: center;
 	opacity: 0;
 	font-size: 2.5em;	
+	transition: opacity 1s;
+	-moz-transition: opacity 1s;
 	-webkit-transition: opacity 1s;
 }
 
@@ -96,6 +100,11 @@ h2{
 #introDescription{
 	margin-top: 5%;
 	opacity: 0;
+
+	transition: opacity 1s;
+	transition-delay: 1.5s;
+	-moz-transition: opacity 1s;
+	-moz-transition-delay: 1.5s;
 	-webkit-transition: opacity 1s;
 	-webkit-transition-delay: 1.5s;
 }
@@ -103,6 +112,11 @@ h2{
 #introContinue{
 	margin-top: 5%;
 	opacity: 0;
+	
+	transition: opacity 1s;
+	transition-delay: 3s;
+	-moz-transition: opacity 1s;
+	-moz-transition-delay: 3s;
 	-webkit-transition: opacity 1s;
 	-webkit-transition-delay: 3s;
 }
@@ -121,6 +135,8 @@ h2{
 	height: 60%;
 	width: 100%;
 	margin-top: 15px;
+	transition: height 1s;
+	-moz-transition: height 1s;
 	-webkit-transition: height 1s;
 }
 
@@ -164,6 +180,7 @@ input[type=button]{
 	font-size: 1em;
 	color: #4f92ff;
 	padding: 0 25px;
+	background-color: white;
 }
 
 input[type=button]:hover{

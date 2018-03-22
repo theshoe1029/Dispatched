@@ -80,7 +80,7 @@ function playIntro(){
   console.log("/***********************************/");
   console.log("/*CREATED BY ADAM SCHUELLER IN 2018*/")
   console.log("/***********************************/");
-  if(cookie != 'played'){
+  if(cookie != 'played=true'){
     var img = document.getElementById("introLogo")
     var header = document.getElementsByTagName("h2");
     var text = document.getElementsByTagName("p");
@@ -89,7 +89,7 @@ function playIntro(){
     header[0].style.opacity = 1;
     text[0].style.opacity = 1; 
     text[1].style.opacity = 1;
-    document.cookie = "played";
+    document.cookie = "played=true";
   }
   else{            
     intro.hidden = true;
@@ -801,8 +801,8 @@ function generateWeekdayCrashes(){
 }
 
 function showWeekdayCrashes(sortedCount){
-  points = []
-  days = []
+  var points = []
+  var days = []
   for (var day in sortedCount){
     points.push(sortedCount[day]);
     days.push(day);
@@ -816,7 +816,7 @@ function showWeekdayCrashes(sortedCount){
           label: 'Traffic Collisions Between 10pm and 4am',
           data: points,
           backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
+              'rgba(255, 99, 132, 0.2)'
           ],
           borderColor: [
               'rgba(255,99,132,1)'
