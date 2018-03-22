@@ -76,10 +76,8 @@ function drawData(){
   generateFrequencyGraph();
 }
 
-function playIntro(){
-  console.log("/***********************************/");
+function playIntro(){  
   console.log("/*CREATED BY ADAM SCHUELLER IN 2018*/")
-  console.log("/***********************************/");
   if(cookie != 'played=true'){
     var img = document.getElementById("introLogo")
     var header = document.getElementsByTagName("h2");
@@ -660,16 +658,72 @@ function displayHeatmap(){
 
 function generateCircles(){
   d3.csv("sfpd-dispatch/sfpd_dispatch_data_subset.csv", function(data) {
-    var circles = []
-    for(i=0; i<20; i++){
-      var circle = {}
-      var dataPos = {}
-      dataPos["lat"] = parseFloat(data[i].latitude);
-      dataPos["lng"] = parseFloat(data[i].longitude);
-      circle["center"] = dataPos;
-      circle["radius"] = 100;
-      circles.push(circle);
+    var districtLocations = {};
+    var districtEntries = {};
+    var dimensions = {};
+
+    for(i=0; i<data.length; i++){
+      var district = data[i].supervisor_district;
+      var entryLat = parseFloat(data[i].latitude);
+      var entryLng = parseFloat(data[i].longitude);
+      var callType = data[i].call_type;
+                                    
+      if (callType != 'Medical Incident'){          
+        if(district in districtLocations){                            
+            districtLocations[district]['lat'] += entryLat;
+            districtLocations[district]['lng'] += entryLng;
+            districtEntries[district] += 1;  
+        } 
+        else{
+            districtLocations[district] = {'lat':entryLat,'lng':entryLng};          
+            districtEntries[district] = 1;            
+        } 
+      }
     }
+    
+    var optimalLat = {};
+    var optimalLng = {};
+    for (var district in districtLocations){
+      optimalLat[district] = districtLocations[district]['lat']/parseFloat(districtEntries[district]);
+      optimalLng[district] = districtLocations[district]['lng']/parseFloat(districtEntries[district]);  
+    }
+
+    var distanceFromOptimal = {}    
+    var radius = {}
+    for (i=0; i<data.length; i++){
+      var district = data[i].supervisor_district;
+      var entryLat = parseFloat(data[i].latitude);
+      var entryLng = parseFloat(data[i].longitude);
+      var callType = data[i].call_type;
+                                    
+      if (callType != 'Medical Incident'){          
+        if(district in distanceFromOptimal){                            
+            distanceFromOptimal[district] += calculateDistance(entryLat,entryLng,optimalLat[district],optimalLng[district]);           
+        } 
+        else{
+          distanceFromOptimal[district] = calculateDistance(entryLat,entryLng,optimalLat[district],optimalLng[district]);                     
+        } 
+      }
+    }
+     
+    var circles = [];
+    for (var district in districtLocations){
+      var circle = {};
+      circle["center"] = {'lat':optimalLat[district],'lng':optimalLng[district]};
+      circle["radius"] = (distanceFromOptimal[district]/districtEntries[district]);
+      circles.push(circle)  
+    }    
+
+    // var circles = []
+    // for(i=0; i<data.length; i++){
+    //   var circle = {}
+    //   var dataPos = {}
+    //   dataPos["lat"] = parseFloat(data[i].latitude);
+    //   dataPos["lng"] = parseFloat(data[i].longitude);
+    //   circle["center"] = dataPos;
+    //   circle["radius"] = 20;
+    //   circles.push(circle);
+    // }
     displaySafest(circles);
   });
 }
@@ -678,8 +732,8 @@ function displaySafest(circles){
   safetySwitch = !safetySwitch;
 
   if (safetySwitch){    
-    safeDescription.hidden = false;
-    map.setZoom(map.getZoom()-2);
+    map.setZoom(map.getZoom()-5);
+    safeDescription.hidden = false;    
     address.hidden = true;
     timer.hidden = true;
     submit.hidden = true;
@@ -701,9 +755,9 @@ function displaySafest(circles){
       markers.push(cityCircle);
     }
   }
-  else{
+  else{    
     safeDescription.hidden = true;
-    map.setZoom(map.getZoom()+2);
+    map.setZoom(map.getZoom()+5);
     address.hidden = false;
     timer.hidden = false;
     submit.hidden = false;
@@ -767,13 +821,13 @@ function generateWeekdayCrashes(){
   d3.csv("sfpd-dispatch/sfpd_dispatch_data_subset.csv", function(data) {    
     for(i=0; i<data.length; i++){
       var receivedTime = data[i].received_timestamp;
-      var day = convertTimestamp(receivedTime).year + '-' + convertTimestamp(receivedTime).month + '-' + convertTimestamp(receivedTime).day;
       var hour = convertTimestamp(receivedTime).hour;
+      var modifiedTimesamp = convertTimestamp(receivedTime).month + '/' + convertTimestamp(receivedTime).day + '/' + convertTimestamp(receivedTime).year;            
       var call_type = data[i].call_type;
-
-      var date = new Date(receivedTime);  
+      
+      var date = new Date(modifiedTimesamp);  
       var dayCount = date.getDay();
-      var weekday = dayOfWeek(date.getDay())
+      var weekday = dayOfWeek(date.getDay());      
 
       if((hour <= 4 || hour >= 22) && call_type == "Traffic Collision"){           
         if (dayCount in counts){
@@ -785,6 +839,7 @@ function generateWeekdayCrashes(){
       }
     } 
 
+    console.log(counts);
     var sortedCount = {}
     for(i=0; i<7; i++){      
       var weekday = dayOfWeek(i);
@@ -800,7 +855,7 @@ function generateWeekdayCrashes(){
   });   
 }
 
-function showWeekdayCrashes(sortedCount){
+function showWeekdayCrashes(sortedCount){  
   var points = []
   var days = []
   for (var day in sortedCount){
