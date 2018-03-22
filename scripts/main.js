@@ -516,8 +516,7 @@ function showPredictionGraph(){
       probability[key] = (probability[key]/sumOfScores)*100;                    
     } 
 
-    probability = sortAssignedArray(probability);
-    console.log(probability);      
+    probability = sortAssignedArray(probability);        
 
     //Display the prediction in either graph or text form
     if (predictionSwitch){
