@@ -8,11 +8,9 @@
 ////////////////////////////////////////////////////
 
 
-//************************************************//
-//STORE THE INPUTTED LOCATION AND TIME            //
-//************************************************//
-
+//Initialize map and map overlays
 var map,heatmap,markers;
+//Store the inputted coordinates and time
 var inputLat,inputLng,inputTime;
 
 //************************************************//
@@ -67,17 +65,20 @@ var visualization = document.getElementById("visualization");
 var responseTimes = document.getElementById("responseTimes");
 var callFrequencies = document.getElementById("callFrequencies");
 
-function drawData(){
-  selectGraphVisual(slideIndex);  
-  generateWeekdayCrashes();
-  generateDistrictCrashes();
-  generateHourlyCrashes();
-  generateAvgGraph();
-  generateFrequencyGraph();
-}
 
+////////////////////////////////////////////////////
+///INITIALIZATION FUNCTIONS                      ///
+////////////////////////////////////////////////////
+
+
+//************************************************//
+//CONTROL INTRO ANIMATION                         //
+//************************************************//
+
+//Play intro animation the first time a user visits the site
 function playIntro(){  
-  console.log("/*CREATED BY ADAM SCHUELLER IN 2018*/")
+  console.log("/*CREATED BY ADAM SCHUELLER IN 2018*/");
+  //If the user has not visited the site, animate the intro page
   if(cookie != 'played=true'){
     var img = document.getElementById("introLogo")
     var header = document.getElementsByTagName("h2");
@@ -89,6 +90,7 @@ function playIntro(){
     text[1].style.opacity = 1;
     document.cookie = "played=true";
   }
+  //If the user has visited the site skip the intro
   else{            
     intro.hidden = true;
     menu.hidden = false;
@@ -97,6 +99,7 @@ function playIntro(){
   }
 }
 
+//End the intro once a key is pressed
 var fired = false;
 
 document.onkeydown = function() {
@@ -152,6 +155,8 @@ function initialize(points) {
   toggleHeatmap();
 }
 
+//Function that hides the map options when the address input box
+//is clicked
 function hideButtons(){
   dispatch.hidden = true;
   heatMap.hidden = true;
@@ -159,7 +164,7 @@ function hideButtons(){
 }
 
 //This function intializes the gogole map and applies a 
-//heatmap layer to the map using the inputted points
+//heatmap layer
 function initMap(points){
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 37.7749, lng: -122.4194},
@@ -294,19 +299,11 @@ function submitAddress(){
   });
 }
 
-function dataPageMap(){ 
-  optimalServicesMap = new google.maps.Map(document.getElementById('optimalServicesMap'), {
-    center: {lat: 37.7749, lng: -122.4194},
-    zoom: 12,
-    mapTypeId: 'roadmap'
-  });
-}
-
 //************************************************************//
 //HELPER FUNCTIONS FOR MAKING AND SHOWING PREDICTIONS         //
 //************************************************************//
 
-//Function to convert timestamps into an assigned array of values
+//Function to convert timestamps into an associative array of values
 function convertTimestamp(timestamp){
   var time = {};
   time['year'] = timestamp.slice(0,4);
@@ -320,6 +317,8 @@ function convertTimestamp(timestamp){
   return time;
 }
 
+//Function that returns the day of the week based on an inputted
+//javascript date
 function dayOfWeek(day){
     var weekday = new Array(7);
     weekday[0] = "Sunday";
@@ -348,8 +347,10 @@ function calculateDistance(lat1,lng1,lat2,lng2){
   return R * c;          
 }
 
-function sortAssignedArray(arr){
-  //Find top five predictions
+//Function to sort an associative array
+function sortAssociativeArray(arr){
+  //Store the values in the associative array in a standard array
+  //and sort the standard array
   var sortedOutput = {};
   var sortedValues = [];
   for (var key in arr){
@@ -357,6 +358,7 @@ function sortAssignedArray(arr){
   }
   sortedValues = sortedValues.sort(function(a, b){return b-a});
 
+  //Pair all the keys with their values in the sorted array
   for (i=0;i<sortedValues.length;i++){
     for (var key in arr){        
       if (arr[key] == sortedValues[i]){
@@ -389,7 +391,7 @@ function prediction(){
 function drawPredictionGraph(predictions, destroy){
   var ctx = document.getElementById("chart").getContext('2d');  
 
-  //Convert the assigned array of prediction percentages to label and data 
+  //Convert the associative array of prediction percentages to label and data 
   //arrays that can be graphed
   var predictionLabels = [];
   var predictionData = [];
@@ -514,7 +516,7 @@ function showPredictionGraph(){
       probability[key] = (probability[key]/sumOfScores)*100;                    
     } 
 
-    probability = sortAssignedArray(probability);        
+    probability = sortAssociativeArray(probability);        
 
     //Display the prediction in either graph or text form
     if (predictionSwitch){
@@ -656,12 +658,16 @@ function displayHeatmap(){
 //FUNCTIONS FOR DETERMINING AND VISUALIZING THE SAFEST AREAS        //
 //******************************************************************//
 
+
+//Function to generate circles over the least safe areas
 function generateCircles(){
   d3.csv("sfpd-dispatch/sfpd_dispatch_data_subset.csv", function(data) {
     var districtLocations = {};
     var districtEntries = {};
     var dimensions = {};
 
+    //This loop sums the coordinates of all non-medical calls in each district so that
+    //the average location of a call can be determined for each district
     for(i=0; i<data.length; i++){
       var district = data[i].supervisor_district;
       var entryLat = parseFloat(data[i].latitude);
@@ -681,6 +687,7 @@ function generateCircles(){
       }
     }
     
+    //Calculate the average call location to find the center of the circle for that district
     var optimalLat = {};
     var optimalLng = {};
     for (var district in districtLocations){
@@ -688,6 +695,8 @@ function generateCircles(){
       optimalLng[district] = districtLocations[district]['lng']/parseFloat(districtEntries[district]);  
     }
 
+    //Calculate the average distance from a call to the center of the circle for each district
+    //to find the radius of the circle for that district
     var distanceFromOptimal = {}    
     var radius = {}
     for (i=0; i<data.length; i++){
@@ -706,6 +715,7 @@ function generateCircles(){
       }
     }
      
+    //Store the circles for each district in an array so that they can be drawn     
     var circles = [];
     for (var district in districtLocations){
       var circle = {};
@@ -714,33 +724,28 @@ function generateCircles(){
       circles.push(circle)  
     }    
 
-    // var circles = []
-    // for(i=0; i<data.length; i++){
-    //   var circle = {}
-    //   var dataPos = {}
-    //   dataPos["lat"] = parseFloat(data[i].latitude);
-    //   dataPos["lng"] = parseFloat(data[i].longitude);
-    //   circle["center"] = dataPos;
-    //   circle["radius"] = 20;
-    //   circles.push(circle);
-    // }
     displaySafest(circles);
   });
 }
 
+//Function to draw the inputted circles
 function displaySafest(circles){
   safetySwitch = !safetySwitch;
 
   if (safetySwitch){    
+    //Zoom out and hide all other input fields
     map.setZoom(map.getZoom()-5);
     safeDescription.hidden = false;    
     address.hidden = true;
     timer.hidden = true;
     submit.hidden = true;
+
+    //Disable the other map options
     dispatch.disabled = true;
     heatMap.disabled = true;
     safetyMap.value = "Hide Safest Areas";
 
+    //Iterate over each inputted circle and draw them on the map
     for(i=0; i<circles.length; i++){
       var cityCircle = new google.maps.Circle({
         strokeColor: '#FF0000',
@@ -756,65 +761,91 @@ function displaySafest(circles){
     }
   }
   else{    
-    safeDescription.hidden = true;
+    //Show the other inputs and hide the safety map description
     map.setZoom(map.getZoom()+5);
+    safeDescription.hidden = true;    
     address.hidden = false;
     timer.hidden = false;
     submit.hidden = false;
-    dispatch.disabled = false;
-    heatMap.disabled = false;
-    safetyMap.value = "Safest Areas";
+
+    //Destroy the circles on the map
     for (var i in markers){
       markers[i].setMap(null);
     }
+
+    //Enable the other map options
+    dispatch.disabled = false;
+    heatMap.disabled = false;
+    safetyMap.value = "Safest Areas";  
   }
+  //Refresh the map to show the change in the circles
   google.maps.event.trigger(map, 'resize');
 }
+
 
 ////////////////////////////////////////////////////
 ///FUNCTIONS FOR DATA PAGE                       ///
 ////////////////////////////////////////////////////
 
+
+//************************************************//
+//INITIALIZATION FUNCTIONS FOR WHEN THE PAGE LOADS//
+//************************************************//
+
+//Draw graphs for data page
+function drawData(){
+  //Select which of the three crash data graphs to show
+  selectGraphVisual(slideIndex);  
+  //Graph crash data
+  generateWeekdayCrashes();
+  generateDistrictCrashes();
+  generateHourlyCrashes();
+
+  //Graph the average response times
+  generateAvgGraph();
+  //Graph call frequency trends
+  generateFrequencyGraph();
+}
+
+//Function to create a map to show the optimal locations for placing additional units
+function dataPageMap(){ 
+  optimalServicesMap = new google.maps.Map(document.getElementById('optimalServicesMap'), {
+    center: {lat: 37.7749, lng: -122.4194},
+    zoom: 12,
+    mapTypeId: 'roadmap'
+  });
+}
+
 //********************************************//
 //FUNCTIONS TO VISUALIZE CRASH DATA           //
 //********************************************//
 
+//Control for choosing which crash data graph to show
 function shiftGraph(n){
   selectGraphVisual(slideIndex += n);
 }
 
+//Display the chosen graph
 function selectGraphVisual(n){
   var i;
   var x = document.getElementsByClassName("dataVisualization");
   var analysis = document.getElementsByClassName("visualizationAnalysis");
-    if (n > x.length) {slideIndex = 1}    
-    if (n < 1) {slideIndex = x.length}
-    for (i = 0; i < x.length; i++) {
-       x[i].style.display = "none";
-       analysis[i].style.display = "none";  
-    }    
+
+  //Hide all graphs and analysis paragraphs other than the selected one
+  if (n > x.length) {slideIndex = 1}    
+  if (n < 1) {slideIndex = x.length
+  for (i = 0; i < x.length; i++) {
+     x[i].style.display = "none";
+     analysis[i].style.display = "none";  
+  }    
+
+  //Show the selected graph and accompanying analysis
   x[slideIndex-1].style.display = "block";
   analysis[slideIndex-1].style.display = "block";
 }
 
-function showDataVisualization(){
-  visualization.hidden = false;
-  responseTimes.hidden = true;
-  callFrequencies.hidden = true;
-}
-
-function showResponseTimes(){
-  visualization.hidden = true;
-  responseTimes.hidden = false;
-  callFrequencies.hidden = true;
-}
-
-function showCallFrequencies(){
-  visualization.hidden = true;
-  responseTimes.hidden = true;
-  callFrequencies.hidden = false;
-}
-
+//Generate a graph showing how many crashes occur late at night
+//on each weekday
 function generateWeekdayCrashes(){
   var counts = {};  
  
@@ -825,10 +856,12 @@ function generateWeekdayCrashes(){
       var modifiedTimesamp = convertTimestamp(receivedTime).month + '/' + convertTimestamp(receivedTime).day + '/' + convertTimestamp(receivedTime).year;            
       var call_type = data[i].call_type;
       
+      //Find the day of the week for the current entry
       var date = new Date(modifiedTimesamp);  
       var dayCount = date.getDay();
       var weekday = dayOfWeek(date.getDay());      
 
+      //Add to the count if the current entry is a collision that occured late at night
       if((hour <= 4 || hour >= 22) && call_type == "Traffic Collision"){           
         if (dayCount in counts){
           counts[dayCount] += 1;
@@ -838,8 +871,9 @@ function generateWeekdayCrashes(){
         }  
       }
     } 
-
-    console.log(counts);
+    
+    //Sort the array of counts so that they are displayed in the order of
+    //the days of the week    
     var sortedCount = {}
     for(i=0; i<7; i++){      
       var weekday = dayOfWeek(i);
@@ -850,11 +884,13 @@ function generateWeekdayCrashes(){
         }
       }
     }
-  
+    
+    //Graph the counts
     showWeekdayCrashes(sortedCount);                
   });   
 }
 
+//Create a line graph of the number of crashes that occur on each day of the week
 function showWeekdayCrashes(sortedCount){  
   var points = []
   var days = []
@@ -891,6 +927,7 @@ function showWeekdayCrashes(sortedCount){
   });
 }
 
+//Generate a graph showing which districts have the most crashes
 function generateDistrictCrashes(){
   d3.csv("sfpd-dispatch/sfpd_dispatch_data_subset.csv", function(data) {  
     var counts = {}       
@@ -900,6 +937,7 @@ function generateDistrictCrashes(){
       var timestamp = data[i].received_timestamp;
       var hour = convertTimestamp(timestamp).hour;
 
+      //Count all the crashes that occur in each district between 10pm and 4am
       if((hour <= 4 || hour >= 22) && call_type == "Traffic Collision"){       
         if (district in counts){
           counts[district] += 1;
@@ -909,14 +947,16 @@ function generateDistrictCrashes(){
         }   
       }  
     }          
+    //Graph the counts
     showDistrictCrashes(counts);       
   });
 }
 
+//Create a bar graph of the number of crashes that occur in each district
 function showDistrictCrashes(accidentCounts){
   var ctx = document.getElementById("crashDistricts").getContext('2d');  
 
-  //Convert the assigned array of prediction percentages to label and data 
+  //Convert the associative array of counts to label and data 
   //arrays that can be graphed
   var labels = [];
   var data = [];
@@ -924,8 +964,7 @@ function showDistrictCrashes(accidentCounts){
     labels.push("District " + key);
     data.push(accidentCounts[key]);
   }
-  
-  //Create a bar chart containing the top five predictions
+
   var chart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -964,6 +1003,7 @@ function showDistrictCrashes(accidentCounts){
   });
 }
 
+//Generate a graph showing the hour when crashes occur late at night
 function generateHourlyCrashes(){
   var crashes = {};  
  
@@ -973,6 +1013,8 @@ function generateHourlyCrashes(){
       var hour = convertTimestamp(receivedTime).hour;
       var call_type = data[i].call_type;
 
+      //Count all the crashes that occur within 10pm and 4am and map the count
+      //to the hour when the crash occured
       if((hour <= 4 || hour >= 22) && call_type == "Traffic Collision"){           
         if (hour in crashes){
           crashes[hour] += 1;
@@ -982,20 +1024,26 @@ function generateHourlyCrashes(){
         }  
       }
     }      
+    //Graph the counts
     showHourlyCrashes(crashes);                
   });   
 }
 
+//Generate a line graph showing the number of crashes that occur by hour
 function showHourlyCrashes(crashCount){
   crashes = []
   hours = []
   currentHour = 22;
-  while(currentHour != 5){  
+
+  //Create labels for times from 10pm to 4am
+  while(currentHour != 5){
+    //If the hour has reached 24 set it to 0 for am  
     var hourLabel;   
     if(currentHour == 24){
       currentHour = 0;
     }
 
+    //Give each time a label based on wether it occurs in the am or pm
     if(currentHour > 12){
       hourLabel = String(currentHour-12) + ':' + '00 PM';
     }
@@ -1006,8 +1054,10 @@ function showHourlyCrashes(crashCount){
       hourLabel = String(currentHour) + ':' + '00 AM';
     }
 
+    //Store the new label and the crash count in arrays so they can be graphed
     crashes.push(crashCount[currentHour]);
     hours.push(hourLabel);
+    //Increment the current hour
     currentHour++;    
   }  
 
@@ -1040,14 +1090,16 @@ function showHourlyCrashes(crashCount){
   });
 }
 
-//*******************************************************************************************************//
-//FUNCTIONS TO GRAPH THE AVERAGE RESPONSE TIME AND FIND A SOLUTION TO DECREASE RESPONSE TIMES            //
-//*******************************************************************************************************//
+//********************************************************//
+//FUNCTIONS TO GRAPH THE AVERAGE RESPONSE TIME            //
+//********************************************************//
 
+//Calculate how long it took in minutes for a call to get a response
 function getResponseTime(start,end){
   var startTimes = convertTimestamp(start);
   var endTimes = convertTimestamp(end);
   
+  //Calculate the total start and end times in seconds
   var totalStart = (startTimes.hour*3600) + (startTimes.minute*60) + startTimes.seconds + (startTimes.partial_seconds*1000000)
   var totalEnd = (endTimes.hour*3600) + (endTimes.minute*60) + endTimes.seconds + (endTimes.partial_seconds*1000000)
 
@@ -1055,23 +1107,28 @@ function getResponseTime(start,end){
     totalEnd += (24*3600);
   }
 
+  //If the call took more than an hour calculate the number of hours it took
   if((totalEnd-totalStart)>3600){
     var hours = ((totalEnd-totalStart) - (totalEnd-totalStart)%3600)/3600; 
   }
   else{
     var hours = 0;
   }
+  //If the call took more than a minute calculate the number of minutes it took
   if((totalEnd-totalStart)>60){ 
     var minutes = ((totalEnd-(hours*3600)-totalStart)-(totalEnd-(hours*3600)-totalStart)%60)/60; 
   }
   else{
     var minutes = 0;
   }
+  //Calculate seconds as the end time minus the hours and minutes previously calculated
   var seconds = (totalEnd-(hours*3600)-(minutes*60)-totalStart); 
 
+  //Return the response time in minutes
   return (hours*60)+minutes+(seconds/60.0);
 }
 
+//Generate a graph of how long the average call takes to respond to
 function generateAvgGraph(){
   var sums = {};
   var count = {};
@@ -1081,12 +1138,13 @@ function generateAvgGraph(){
   d3.csv("sfpd-dispatch/sfpd_dispatch_data_subset.csv", function(data) {             
     for(i=0; i<data.length; i++){
       var receivedTime = data[i].received_timestamp;
-      var onSiteTime = data[i].dispatch_timestamp;            
-
-      var timeElapsed = getResponseTime(receivedTime,onSiteTime);
-      var neighborhood = (data[i].supervisor_district);
+      var onSiteTime = data[i].dispatch_timestamp;    
+      var neighborhood = (data[i].supervisor_district);        
       var unit_type = data[i].unit_type;
+      var timeElapsed = getResponseTime(receivedTime,onSiteTime);            
 
+      //Count how many units neighborhoods 6 and 7 need as they have the longest
+      //response times
       if(neighborhood == 7 || neighborhood == 6){            
         if(unit_type in unitsNeeded[neighborhood]){
           unitsNeeded[neighborhood][unit_type] += 1;
@@ -1096,6 +1154,8 @@ function generateAvgGraph(){
         }
       }      
 
+      //Sum the total response times for each neighborhood so they can be averaged
+      //later
       if (neighborhood in sums){
         sums[neighborhood] += timeElapsed;
         count[neighborhood] += 1;
@@ -1107,13 +1167,16 @@ function generateAvgGraph(){
       }      
     }
 
+    //Calculate the average response time for each district
     for (var key in sums){
       graph[key] = sums[key]/count[key];                    
     }
     
-    unitsNeeded['6'] = sortAssignedArray(unitsNeeded['6']);
-    unitsNeeded['7'] = sortAssignedArray(unitsNeeded['7']);
+    unitsNeeded['6'] = sortAssociativeArray(unitsNeeded['6']);
+    unitsNeeded['7'] = sortAssociativeArray(unitsNeeded['7']);
 
+    //Generate a table showing how many of each type of unit districts 6 and 7 use to show which
+    //ones they need
     var tableHeaders = ["DISTRICT"];
     var d6Elements = ["District 6"];
     var d7Elements = ["District 7"];
@@ -1154,10 +1217,12 @@ function generateAvgGraph(){
       }
     }
 
+    //Graph the average response time
     graphAverages(graph);
   }); 
 }
 
+//Create a bar graph of the average response time for each district
 function graphAverages(averages){
   var ctx = document.getElementById("avgDispatchTime").getContext('2d');
   var averageLabels = [];
@@ -1224,10 +1289,12 @@ function graphAverages(averages){
   });
 }
 
-//****************************************************************************************//
-//FUNCTIONS TO FIND THE CHANGE IN DAILY CALLS AND MAP SOLUTION TO SERVICE AREAS           //
-//****************************************************************************************//
+//******************************************************//
+//FUNCTIONS TO FIND THE CHANGE IN DAILY CALLS           //
+//******************************************************//
 
+//Generate a graph of how the number of calls received per day changes
+//over the duration of the dataset
 function generateFrequencyGraph(){
   var sums = {};
   var count = {};
@@ -1237,6 +1304,9 @@ function generateFrequencyGraph(){
     var positiveDistricts = [];
     var totalDistricts = 0;
     var totalDays = 0;
+
+    //Count the number of districts and initialize the associative array corresponding
+    //to each district
     for(i=0; i<data.length;i++){
       var district = data[i].supervisor_district;
      
@@ -1245,6 +1315,8 @@ function generateFrequencyGraph(){
       }
       districtCounts[district] = {}
     }     
+
+    //Calculate how many calls occur in each district on each day of the week
     for(i=0; i<data.length; i++){
       var district = data[i].supervisor_district;
       var receivedTime = data[i].received_timestamp;
@@ -1259,6 +1331,7 @@ function generateFrequencyGraph(){
       }  
     }      
 
+    //Calculate the change in the number of daily calls for each district over each day in the dataset
     for (var district in districtCounts){
       graph[district] = 0;
       for(var day in districtCounts[district]){ 
@@ -1267,6 +1340,9 @@ function generateFrequencyGraph(){
           graph[district] += (districtCounts[district][nextDay] - districtCounts[district][day]);
         }
       }
+
+      //If a district does not have a positive change in the number of calls per day remove
+      //it from the graph
       if(graph[district] > 0){ 
         graph[district] = graph[district]/totalDays;
         positiveDistricts.push(district);
@@ -1275,12 +1351,16 @@ function generateFrequencyGraph(){
         delete graph[district];
       }
     }  
-       
+    
+    //Graph the change in the number of calls    
     graphFrequency(graph);
+    //Find the optimal location for additional units
     findOptimalServicesLocations(positiveDistricts);
   });
 }
 
+//Create a bar graph of the districts that saw an increase in the number
+//of calls received per day
 function graphFrequency(changeInCalls){
   var ctx = document.getElementById("frequencyTrend").getContext('2d');
   var labels = [];
@@ -1318,18 +1398,23 @@ function graphFrequency(changeInCalls){
   });
 }
 
+//Find the optimal location for additional service units in the districts
+//that saw an increase in the number of calls received per day
 function findOptimalServicesLocations(increasedDistricts){
   d3.csv("sfpd-dispatch/sfpd_dispatch_data_subset.csv", function(data) {    
     var districtLocations = {};
     var districtEntries = {};    
     var unitsNeeded= {};
 
+    //Initialize the location and entry count for each district
     for(i=0;i<increasedDistricts.length;i++){ 
       districtLocations[increasedDistricts[i]] = {'lat':0,'lng':0};      
       districtEntries[increasedDistricts[i]] = 0;  
       unitsNeeded[increasedDistricts[i]] = {};    
     }     
     
+    //Sum the latitude and longitude of each entry in each district
+    //with either a medic or engine unit type
     for(i=0; i<data.length; i++){
       var district = data[i].supervisor_district;
       var entryLat = parseFloat(data[i].latitude);
@@ -1351,6 +1436,20 @@ function findOptimalServicesLocations(increasedDistricts){
       }  
     }
 
+    //Calculate the average latitude and longitude of a call in each district
+    //and palce a marker at that location
+    for (var district in districtLocations){
+      var optimalLat = districtLocations[district]['lat']/parseFloat(districtEntries[district]);
+      var optimalLng = districtLocations[district]['lng']/parseFloat(districtEntries[district]);
+      var marker = new google.maps.Marker({
+        position: {lat: optimalLat, lng: optimalLng},
+        map: optimalServicesMap,
+        label: district,              
+      });     
+    }
+
+    //Initialize arrays to hold the data for a table displaying the number of calls requiring
+    //either a medic or engine
     var elements = {};
     var tableHeaders = ["DISTRICT"];
     var headersGenerated = false;
@@ -1360,6 +1459,8 @@ function findOptimalServicesLocations(increasedDistricts){
       elements[district] = [description];
     }
     
+    //Store the name of the district and the top 7 unit types needed
+    //in arrays to fill out the table
     for (var district in elements){     
       for(var type in unitsNeeded[district]){
         if(headersGenerated == false){
@@ -1374,7 +1475,9 @@ function findOptimalServicesLocations(increasedDistricts){
       elements[district] = elements[district].splice(0,8);
     }
 
+    //Fill out the table using the unit counts for each district
     for (i=0; i<tableHeaders.length; i++){
+      //Color the top two unit types needed in green
       if (i==1 || i==2){
         $('#frequencyTitles').append('<th style="color: black; background-color: lightgreen;">' + tableHeaders[i] + '</th>');
       }
@@ -1393,15 +1496,6 @@ function findOptimalServicesLocations(increasedDistricts){
         }
       }
     }    
-
-    for (var district in districtLocations){
-      var optimalLat = districtLocations[district]['lat']/parseFloat(districtEntries[district]);
-      var optimalLng = districtLocations[district]['lng']/parseFloat(districtEntries[district]);
-      var marker = new google.maps.Marker({
-        position: {lat: optimalLat, lng: optimalLng},
-        map: optimalServicesMap,
-        label: district,              
-      });     
-    }
   });
+}
 }

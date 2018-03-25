@@ -6,6 +6,70 @@ body{
 }
 
 /*****************************/
+/*    INTRO PAGE             */
+/*****************************/
+
+#intro{
+	padding-top: 200px;
+	height: 100%;
+	width: 100%;
+	background-color: #4f92ff;
+	color: white;
+}
+
+#introLogo{
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+
+	opacity: 0;
+	transition: opacity 1s;
+	-moz-transition: opacity 1s;
+	-webkit-transition: opacity 1s;
+}
+
+h2{
+	margin-top: 25px;
+	text-align: center;
+	font-size: 2.5em;
+
+	opacity: 0;	
+	transition: opacity 1s;
+	-moz-transition: opacity 1s;
+	-webkit-transition: opacity 1s;
+}
+
+#intro p{
+	text-align: center;
+	font-size: 1.25em;
+	opacity: 0;	
+}
+
+#introDescription{
+	margin-top: 5%;	
+
+	opacity: 0;
+	transition: opacity 1s;
+	transition-delay: 1.5s;
+	-moz-transition: opacity 1s;
+	-moz-transition-delay: 1.5s;
+	-webkit-transition: opacity 1s;
+	-webkit-transition-delay: 1.5s;
+}
+
+#introContinue{
+	margin-top: 5%;	
+	
+	opacity: 0;
+	transition: opacity 1s;
+	transition-delay: 3s;
+	-moz-transition: opacity 1s;
+	-moz-transition-delay: 3s;
+	-webkit-transition: opacity 1s;
+	-webkit-transition-delay: 3s;
+}
+
+/*****************************/
 /*    PAGE NAVIGATION BAR    */
 /*****************************/
 
@@ -23,28 +87,28 @@ body{
 }
 
 #logo{
-	width: auto;
 	margin-left: 5%;
 	padding: 0;
+	width: auto;
 }
 
 h1{	
+	margin-left: 2.5%;
 	color: white;
 	font-weight: normal;
 	font-size: 1.35em;
-	margin-left: 2.5%;
 }
 
 ul{		
-	width: 200px;	
 	margin-left: 4%;	
 	padding: 0;
+	width: 200px;	
 }
 
 li{			
+	margin: 0 5%;	
 	align-self: center;
 	display: inline-block;	
-	margin: 0 5%;		
 }
 
 li a{		
@@ -60,76 +124,9 @@ li a{
 	margin-top: 3em;
 }
 
-button:focus {outline:0;}
-input[type='button']:focus {outline:0;}
-
-#intro{
-	padding-top: 200px;
-	height: 100%;
-	width: 100%;
-	background-color: #4f92ff;
-	color: white;
-}
-
-#introLogo{
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	opacity: 0;
-	transition: opacity 1s;
-	-moz-transition: opacity 1s;
-	-webkit-transition: opacity 1s;
-}
-
-h2{
-	margin-top: 25px;
-	text-align: center;
-	opacity: 0;
-	font-size: 2.5em;	
-	transition: opacity 1s;
-	-moz-transition: opacity 1s;
-	-webkit-transition: opacity 1s;
-}
-
-#intro p{
-	text-align: center;
-	opacity: 0;
-	font-size: 1.25em;
-}
-
-#introDescription{
-	margin-top: 5%;
-	opacity: 0;
-
-	transition: opacity 1s;
-	transition-delay: 1.5s;
-	-moz-transition: opacity 1s;
-	-moz-transition-delay: 1.5s;
-	-webkit-transition: opacity 1s;
-	-webkit-transition-delay: 1.5s;
-}
-
-#introContinue{
-	margin-top: 5%;
-	opacity: 0;
-	
-	transition: opacity 1s;
-	transition-delay: 3s;
-	-moz-transition: opacity 1s;
-	-moz-transition-delay: 3s;
-	-webkit-transition: opacity 1s;
-	-webkit-transition-delay: 3s;
-}
-
 /*************/
-/*    MAP    */
+/*    MAPS   */
 /*************/
-
-#buttonNavigation{
-	display: flex;
-	margin-top: 3.75em;	
-	justify-content: space-between;
-}
 
 #map, #optimalServicesMap{
 	height: 60%;
@@ -145,9 +142,9 @@ h2{
 	margin-top: 25px;
 }
 
-/********************************/
-/*    ADDRESS AND TIME INPUT    */
-/********************************/
+/**********************************/
+/*    BUTTONS AND INPUT FIELDS    */
+/**********************************/
 
 input[type=text]{
 	border-radius: 5px;
@@ -192,6 +189,23 @@ input[type=button]:hover{
 input[type=button]:disabled{
 	color: #d2d2d2;
 }
+
+button:focus {outline:0;}
+input[type='button']:focus {outline:0;}
+
+/****************************/
+/*    NAVIGATION BUTTONS    */
+/****************************/
+
+#buttonNavigation{
+	display: flex;
+	margin-top: 3.75em;	
+	justify-content: space-between;
+}
+
+/**********************************/
+/*    ADDRESS INPUT AND ERRORS    */
+/**********************************/
 
 #address{	
 	width: 100%;
@@ -240,9 +254,9 @@ input[type=button]:disabled{
 	color: #999999;
 }
 
-/******************************/
-/*    UNFINISHED              */
-/******************************/
+/********************************************/
+/*    CRASH VISUALIZATION SHIFTING MENU     */
+/********************************************/
 
 #dataHeader,#responseHeader,#frequencyHeader{	
 	text-align: center;
@@ -270,16 +284,9 @@ input[type=button]:disabled{
 	color: #999999;
 }
 
-#callTypeOther{
-	font-size: 0.5em;
-	color: #999999;
-	text-align: center;
-	margin-top: 25px;
-}
-
-#callTypeAnalysis{
-	margin-top: 15px;	
-}
+/***********************/
+/*    TABLE STYLES     */
+/***********************/
 
 table{
 	border-collapse: collapse;
@@ -307,6 +314,10 @@ th, td {
 #d6, #d7{
 	font-size: 0.85em;
 }
+
+/********************************/
+/*    ANALYSIS TEXT STYLING     */
+/********************************/
 
 #responseAnalysis{
 	margin-top: 35px;
