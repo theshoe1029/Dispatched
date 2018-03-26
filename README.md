@@ -1,16 +1,16 @@
 ## Dispatched ##
 
-Dispatched is an app for mapping and visualizing emergency call data from the San Fransisco police department. This web app is my submission for the Capital One Software Engineering Summit.
+Dispatched is an app for mapping and visualizing emergency call data from the San Fransisco police department. This web app is part of my application for the Capital One Software Engineering Summit.
 
-To create this app I made extensive use of Javascript for graphing and mapping interesting features of the given dataset. The site also makes use of the following frameworks:
+To create this app I made extensive use of Javascript for graphing and mapping interesting features of the given dataset. The site makes use of the following frameworks:
 * [D3.js](https://d3js.org/) for parsing CSV data
-* [Google Maps API](https://developers.google.com/maps/) to create maps and find addresses,
-* [Chart.js](http://www.chartjs.org/) for drawing a variety of graphs
+* [Google Maps API](https://developers.google.com/maps/) to map interesting features in the dataset and  to determine the latitude and longitude of  inputted addresses
+* [Chart.js](http://www.chartjs.org/) for graphing features of the data in a variety of forms
 
 ## Site Outline ##
 This site was designed to meet the following deliverables:
 
- 1.  *Data Visuals: Display or graph 3 metrics or trends from the data set that are interesting to you.*
+*1.  Data Visuals: Display or graph 3 metrics or trends from the data set that are interesting to you.*
 The data page opens with a slideshow style menu that can be manually controlled to show three different graphs highlighting trends in traffic accidents that occur late at night. These graphs highlight the days of the week on which the most accidents occur, the hours during which the most accidents occur, and the districts in which the most accidents occur. These graphs were designed to inform users of how best to handle travel during the night.
 
 *2.  Given an address and time, what is the most likely dispatch to be required?*
