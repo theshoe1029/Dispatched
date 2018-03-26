@@ -237,6 +237,10 @@ input[type='button']:focus {outline:0;}
 	margin: 15px 0;	
 }
 
+#dispatchDescription{
+	text-align: center;
+}
+
 #dispatchInfo p{	
 	margin: 10px 0;
 }

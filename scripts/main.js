@@ -48,6 +48,7 @@ var badAddress = document.getElementById("badAddress");
 
 //Get containers for text below map
 var dispatchInfo = document.getElementById("dispatchInfo");
+var dispatchDescription = document.getElementById("dispatchDescription");
 var heatDescription = document.getElementById("heatDescription");
 var safeDescription = document.getElementById("safeDescription");
 var moreInfo = document.getElementById("moreInfo");
@@ -245,7 +246,7 @@ function initAutocomplete() {
 function submitAddress(){
   //Get the latitude and longitude of the location entered by the user and
   //store them globally
-  var homeMarker = markers[0] 
+  var homeMarker = markers[0];
   inputLat = homeMarker.getPosition().lat();
   inputLng = homeMarker.getPosition().lng(); 
 
@@ -390,6 +391,8 @@ function prediction(){
 //Function that visualizes or destroys the graph of predictions
 function drawPredictionGraph(predictions, destroy){
   var ctx = document.getElementById("chart").getContext('2d');  
+  var dispatchDescription = document.getElementById("dispatchDescription");
+  dispatchDescription.hidden = false;
 
   //Convert the associative array of prediction percentages to label and data 
   //arrays that can be graphed
@@ -440,22 +443,24 @@ function drawPredictionGraph(predictions, destroy){
         }
   });
   //Destroy the graph by removing it's div and then adding a new empty canvas
-  if(destroy){
+  if(destroy){    
+    $('#dispatchDescription').remove();
     $('#chart').remove();    
-    $('#wrapper').append('<canvas id="chart" height="350" hidden="true"><canvas>');
+    $('#wrapper').append('<p id="dispatchDescription" hidden="true">This graph displays the top five most likely units required for a call at the inputted location at the inputted time. Click the more info button to see the full statistics.</p>');
+    $('#wrapper').append('<canvas id="chart" height="350" hidden="true"><canvas>');    
     if(predictionSwitch==false){
       $('#moreInfo').remove();
-      $('#infoContainer').remove();
-      $('#wrapper').append('<div id="infoContainer"><input type="button" id="moreInfo" value="More Info" hidden="true" onclick="info()"></div>');
+      $('#infoContainer').remove();          
+      $('#wrapper').append('<div id="infoContainer"><input type="button" id="moreInfo" value="More Info" hidden="true" onclick="info()"></div>');      
     }
   }
   //If the graph is not supposed to be destroyed remove the moreInfo button and add it again so that
   //it is below the graph
-  else{
-    $('#dispatchInfo').empty();
+  else{   
+    $('#dispatchInfo').empty();    
     $('#moreInfo').remove();
     $('#infoContainer').remove();
-    $('#wrapper').append('<div id="infoContainer"><input type="button" id="moreInfo" value="More Info" onclick="info()"></div>');
+    $('#wrapper').append('<div id="infoContainer"><input type="button" id="moreInfo" value="More Info" onclick="info()"></div>');    
   }
 }
 
@@ -539,7 +544,7 @@ function showPredictionGraph(){
       //any extra information
       if(graphPrediction){
         drawPredictionGraph(probability, false);
-        dispatchInfo.hidden = true;
+        dispatchInfo.hidden = true;        
       }
       //Otherwise destroy the graph and show a full list of probabilities
       else{
@@ -833,7 +838,7 @@ function selectGraphVisual(n){
 
   //Hide all graphs and analysis paragraphs other than the selected one
   if (n > x.length) {slideIndex = 1}    
-  if (n < 1) {slideIndex = x.length
+  if (n < 1) {slideIndex = x.length}
   for (i = 0; i < x.length; i++) {
      x[i].style.display = "none";
      analysis[i].style.display = "none";  
@@ -842,6 +847,24 @@ function selectGraphVisual(n){
   //Show the selected graph and accompanying analysis
   x[slideIndex-1].style.display = "block";
   analysis[slideIndex-1].style.display = "block";
+}
+
+function showDataVisualization(){
+  visualization.hidden = false;
+  responseTimes.hidden = true;
+  callFrequencies.hidden = true;
+}
+
+function showResponseTimes(){
+  visualization.hidden = true;
+  responseTimes.hidden = false;
+  callFrequencies.hidden = true;
+}
+
+function showCallFrequencies(){
+  visualization.hidden = true;
+  responseTimes.hidden = true;
+  callFrequencies.hidden = false;
 }
 
 //Generate a graph showing how many crashes occur late at night
@@ -1454,7 +1477,7 @@ function findOptimalServicesLocations(increasedDistricts){
     var tableHeaders = ["DISTRICT"];
     var headersGenerated = false;
     for(district in unitsNeeded){
-      unitsNeeded[district] = sortAssignedArray(unitsNeeded[district]);
+      unitsNeeded[district] = sortAssociativeArray(unitsNeeded[district]);
       var description = "District " + district
       elements[district] = [description];
     }
@@ -1497,5 +1520,4 @@ function findOptimalServicesLocations(increasedDistricts){
       }
     }    
   });
-}
 }
